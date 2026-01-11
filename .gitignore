@@ -1,0 +1,19 @@
+# Environments
+venv/
+env/
+.env
+
+# Python compilation
+__pycache__/
+*.pyc
+
+# Data (Don't commit large datasets)
+data/raw/*.csv
+data/processed/*.csv
+models/*.pkl
+models/*.h5
+
+# IDE settings
+.vscode/
+.idea/
+.DS_Store
