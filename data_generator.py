@@ -57,7 +57,29 @@ def generate_synthetic_data(num_rows=100000):
             base_long + np.random.uniform(-0.5, 0.5)
         )
 
-        print("Location assigned.")
+    # Generating Merchant Locations
+    merchant_lats = []
+    merchant_longs = []
+    
+    for cust_id in customer_ids:
+        home_lat, home_long = customer_home_locations[cust_id]
+        
+        # 85% transactions near home, 15% travel/fraud
+        if np.random.random() < 0.85:
+            lat_offset = np.random.normal(0, 0.1)  # around 11km
+            long_offset = np.random.normal(0, 0.1)
+        else:
+            lat_offset = np.random.normal(0, 1.5)  # around 166km
+            long_offset = np.random.normal(0, 1.5)
+        
+        merchant_lat = home_lat + lat_offset
+        merchant_long = home_long + long_offset
+        
+        # Clipping to India bounds
+        merchant_lats.append(round(np.clip(merchant_lat, 8.4, 35.5), 4))
+        merchant_longs.append(round(np.clip(merchant_long, 68.7, 97.4), 4))
+
+        print("Merchant Location assigned.")
         return pd.DataFrame({'transaction_id': transaction_ids})
 
 if __name__ == "__main__":
