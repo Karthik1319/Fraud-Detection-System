@@ -171,8 +171,16 @@ def generate_synthetic_data(num_rows=100000):
         'month': months,
         'distance_from_home': distances_from_home
     })
+
+    output_path = 'transactions.csv'
+    df.to_csv(output_path, index=False)
+    
+    print(f"\nSaved to {output_path}")
+    print(f"Fraud Rate: {df['is_fraud'].mean():.2%}")
+    print(f"Total Frauds: {df['is_fraud'].sum():,}")
+    print(df['fraud_type'].value_counts())
     
     return df
 
 if __name__ == "__main__":
-    generate_synthetic_data(100)
+    generate_synthetic_data(1000)
