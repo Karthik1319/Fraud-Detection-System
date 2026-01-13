@@ -27,7 +27,14 @@ def generate_synthetic_data(num_rows=100000):
         ts = base_date - timedelta(days=days_offset, hours=hours, minutes=minutes, seconds=seconds)
         timestamps.append(ts)
     
-    print("Timestamps generated.")
+    # 3. MERCHANT CATEGORIES
+    merchant_categories = [
+        'grocery', 'electronics', 'gas', 'restaurant', 
+        'retail', 'jewelry', 'luxury_goods'
+    ]
+    merchant_category = np.random.choice(merchant_categories, size=num_rows)
+    
+    print("Categories assigned.")
     return pd.DataFrame({'transaction_id': transaction_ids})
 
 if __name__ == "__main__":
