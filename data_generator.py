@@ -142,20 +142,28 @@ def generate_synthetic_data(num_rows=100000):
     for idx in fraud_candidates:
         is_fraud[idx] = 1
         
-        if fraud_types[idx] == 'account_takeover':
-            amounts[idx] = np.random.uniform(50000, 200000)  # Clearly fraudulent amounts
-            distances_from_home[idx] = np.random.uniform(200, 500)  # Very far
-            
-        elif fraud_types[idx] == 'card_cloning':
-            amounts[idx] = np.random.uniform(30000, 100000)
-            distances_from_home[idx] = np.random.uniform(150, 400)
-            hours[idx] = np.random.choice([23, 0, 1, 2, 3, 4])
-            
-        elif fraud_types[idx] == 'merchant_collusion':
-            amounts[idx] = np.random.uniform(40000, 150000)
-            merchant_category[idx] = np.random.choice(['jewelry', 'luxury_goods'])
+        if amounts[idx] > 30000:
+            fraud_types[idx] = 'account_takeover'
+        elif distances_from_home[idx] > 150:
+            fraud_types[idx] = 'card_cloning'
+        elif merchant_category[idx] in ['jewelry', 'luxury_goods']:
+            fraud_types[idx] = 'merchant_collusion'
         else:
             fraud_types[idx] = random.choice(fraud_type_options)
+        
+        if fraud_types[idx] == 'account_takeover':
+            amounts[idx] = np.random.uniform(80000, 300000)  # Now this runs!
+            distances_from_home[idx] = np.random.uniform(250, 600)
+            
+        elif fraud_types[idx] == 'card_cloning':
+            amounts[idx] = np.random.uniform(50000, 150000)
+            distances_from_home[idx] = np.random.uniform(150, 400)
+            hours[idx] = np.random.choice([23, 0, 1, 2, 3, 4])
+            timestamps[idx] = timestamps[idx].replace(hour=hours[idx])
+            
+        elif fraud_types[idx] == 'merchant_collusion':
+            amounts[idx] = np.random.uniform(60000, 250000)
+            merchant_category[idx] = np.random.choice(['jewelry', 'luxury_goods'])
 
     # 8. ASSEMBLE DATAFRAME
     df = pd.DataFrame({
