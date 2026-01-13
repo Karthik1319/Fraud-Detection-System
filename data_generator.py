@@ -183,4 +183,17 @@ def generate_synthetic_data(num_rows=100000):
     return df
 
 if __name__ == "__main__":
-    generate_synthetic_data(1000)
+    df = generate_synthetic_data(num_rows=100000)
+    
+    required_columns = [
+        'transaction_id', 'customer_id', 'card_number', 'timestamp',
+        'amount', 'merchant_id', 'merchant_category', 'merchant_lat',
+        'merchant_long', 'is_fraud', 'fraud_type', 'hour', 
+        'day_of_week', 'month', 'distance_from_home'
+    ]
+    
+    missing_columns = set(required_columns) - set(df.columns)
+    if missing_columns:
+        print(f"WARNING: Missing columns: {missing_columns}")
+    else:
+        print("All required columns present!")
