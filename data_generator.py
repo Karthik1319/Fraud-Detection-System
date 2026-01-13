@@ -127,7 +127,34 @@ def generate_synthetic_data(num_rows=100000):
     high_risk_mask = np.isin(merchant_category, ['jewelry', 'luxury_goods'])
     fraud_candidates.update(np.where(high_risk_mask)[0][:hrp])
 
-    print("Fraud values assigned.")
+    target_frauds = max(1, int(0.02 * num_rows))
+    fraud_candidates = list(fraud_candidates)
+
+    if len(fraud_candidates) < target_frauds:
+        remaining = target_frauds - len(fraud_candidates)
+        available = set(range(num_rows)) - set(fraud_candidates)
+        fraud_candidates.extend(random.sample(list(available), remaining))
+    else:
+        fraud_candidates = random.sample(fraud_candidates, target_frauds)
+
+    fraud_type_options = ['card_cloning', 'account_takeover', 'merchant_collusion']
+
+    for idx in fraud_candidates:
+        is_fraud[idx] = 1
+
+        if amounts[idx] > 30000:
+            fraud_types[idx] = 'account_takeover'
+            amounts[idx] *= np.random.uniform(2.0, 4.0)
+        elif distances_from_home[idx] > 150:
+            fraud_types[idx] = 'card_cloning'
+            amounts[idx] *= np.random.uniform(1.5, 3.0)
+        elif merchant_category[idx] in ['jewelry', 'luxury_goods']:
+            fraud_types[idx] = 'merchant_collusion'
+        else:
+            fraud_types[idx] = random.choice(fraud_type_options)
+
+
+    print("Fraud scenarios assigned.")
     return pd.DataFrame({'transaction_id': transaction_ids})
 
 if __name__ == "__main__":
