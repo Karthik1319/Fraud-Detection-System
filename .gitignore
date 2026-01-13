@@ -11,6 +11,9 @@ transactions.csv
 models/*.pkl
 models/*.h5
 
+logs/
+*.log
+
 # IDE settings
 .vscode/
 .idea/
