@@ -79,7 +79,19 @@ def generate_synthetic_data(num_rows=100000):
         merchant_lats.append(round(np.clip(merchant_lat, 8.4, 35.5), 4))
         merchant_longs.append(round(np.clip(merchant_long, 68.7, 97.4), 4))
 
-        print("Merchant Location assigned.")
+        # Calculating Distance (Simplified Haversine)
+        # 1 deg lat approximates to 111km
+        lat_diff = merchant_lat - home_lat
+        long_diff = merchant_long - home_long
+        
+        distance = np.sqrt(
+            (lat_diff * 111)**2 + 
+            (long_diff * 111 * np.cos(np.radians(home_lat)))**2
+        )
+        distances_from_home = []
+        distances_from_home.append(round(max(0, distance), 2))
+
+        print("Distance Calculation done.")
         return pd.DataFrame({'transaction_id': transaction_ids})
 
 if __name__ == "__main__":
