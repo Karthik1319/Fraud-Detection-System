@@ -60,6 +60,7 @@ def generate_synthetic_data(num_rows=100000):
     # Generating Merchant Locations
     merchant_lats = []
     merchant_longs = []
+    distances_from_home = []
     
     for cust_id in customer_ids:
         home_lat, home_long = customer_home_locations[cust_id]
@@ -88,7 +89,6 @@ def generate_synthetic_data(num_rows=100000):
             (lat_diff * 111)**2 + 
             (long_diff * 111 * np.cos(np.radians(home_lat)))**2
         )
-        distances_from_home = []
         distances_from_home.append(round(max(0, distance), 2))
 
     # 5. TRANSACTION AMOUNTS
@@ -101,7 +101,33 @@ def generate_synthetic_data(num_rows=100000):
     days_of_week = [ts.weekday() for ts in timestamps]
     months = [ts.month for ts in timestamps]
 
-    print("Transaction amounts assigned.")
+    # 7. FRAUD INJECTION (Target: 2%)
+    is_fraud = np.zeros(num_rows, dtype=int)
+    fraud_types = ['none'] * num_rows
+    fraud_candidates = set()
+    
+    hvp = max(1, int(0.006 * num_rows))
+    ldp = max(1, int(0.005 * num_rows))
+    lnp = max(1, int(0.004 * num_rows))
+    hrp = max(1, int(0.005 * num_rows))
+
+    # Pattern 1: High Value
+    high_value_mask = amounts > 20000
+    fraud_candidates.update(np.where(high_value_mask)[0][:hvp])
+    
+    # Pattern 2: Large Distance
+    large_distance_mask = np.array(distances_from_home) > 100
+    fraud_candidates.update(np.where(large_distance_mask)[0][:ldp])
+    
+    # Pattern 3: Late Night (11PM - 4AM)
+    late_night_mask = (np.array(hours) >= 23) | (np.array(hours) <= 4)
+    fraud_candidates.update(np.where(late_night_mask)[0][:lnp])
+
+    # Pattern 4: High Risk Categories
+    high_risk_mask = np.isin(merchant_category, ['jewelry', 'luxury_goods'])
+    fraud_candidates.update(np.where(high_risk_mask)[0][:hrp])
+
+    print("Fraud values assigned.")
     return pd.DataFrame({'transaction_id': transaction_ids})
 
 if __name__ == "__main__":
