@@ -8,6 +8,7 @@ __pycache__/
 *.pyc
 
 transactions.csv
+models/*.pkl
 
 # IDE settings
 .vscode/
