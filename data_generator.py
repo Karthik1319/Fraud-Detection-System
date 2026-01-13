@@ -141,15 +141,19 @@ def generate_synthetic_data(num_rows=100000):
 
     for idx in fraud_candidates:
         is_fraud[idx] = 1
-
-        if amounts[idx] > 30000:
-            fraud_types[idx] = 'account_takeover'
-            amounts[idx] *= np.random.uniform(2.0, 4.0)
-        elif distances_from_home[idx] > 150:
-            fraud_types[idx] = 'card_cloning'
-            amounts[idx] *= np.random.uniform(1.5, 3.0)
-        elif merchant_category[idx] in ['jewelry', 'luxury_goods']:
-            fraud_types[idx] = 'merchant_collusion'
+        
+        if fraud_types[idx] == 'account_takeover':
+            amounts[idx] = np.random.uniform(50000, 200000)  # Clearly fraudulent amounts
+            distances_from_home[idx] = np.random.uniform(200, 500)  # Very far
+            
+        elif fraud_types[idx] == 'card_cloning':
+            amounts[idx] = np.random.uniform(30000, 100000)
+            distances_from_home[idx] = np.random.uniform(150, 400)
+            hours[idx] = np.random.choice([23, 0, 1, 2, 3, 4])
+            
+        elif fraud_types[idx] == 'merchant_collusion':
+            amounts[idx] = np.random.uniform(40000, 150000)
+            merchant_category[idx] = np.random.choice(['jewelry', 'luxury_goods'])
         else:
             fraud_types[idx] = random.choice(fraud_type_options)
 

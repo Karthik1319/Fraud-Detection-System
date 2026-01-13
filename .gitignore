@@ -9,6 +9,7 @@ __pycache__/
 
 transactions.csv
 models/*.pkl
+models/*.h5
 
 # IDE settings
 .vscode/
