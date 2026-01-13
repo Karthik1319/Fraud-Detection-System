@@ -91,8 +91,18 @@ def generate_synthetic_data(num_rows=100000):
         distances_from_home = []
         distances_from_home.append(round(max(0, distance), 2))
 
-        print("Distance Calculation done.")
-        return pd.DataFrame({'transaction_id': transaction_ids})
+    # 5. TRANSACTION AMOUNTS
+    # Gamma distribution for realistic spread (mean = 2000)
+    amounts = np.random.gamma(2, 1000, size=num_rows)
+    amounts = np.round(amounts, 2)
+    
+    # 6. TEMPORAL FEATURES
+    hours = [ts.hour for ts in timestamps]
+    days_of_week = [ts.weekday() for ts in timestamps]
+    months = [ts.month for ts in timestamps]
+
+    print("Transaction amounts assigned.")
+    return pd.DataFrame({'transaction_id': transaction_ids})
 
 if __name__ == "__main__":
     generate_synthetic_data(100)
