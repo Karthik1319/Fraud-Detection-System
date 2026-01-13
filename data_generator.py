@@ -153,9 +153,26 @@ def generate_synthetic_data(num_rows=100000):
         else:
             fraud_types[idx] = random.choice(fraud_type_options)
 
-
-    print("Fraud scenarios assigned.")
-    return pd.DataFrame({'transaction_id': transaction_ids})
+    # 8. ASSEMBLE DATAFRAME
+    df = pd.DataFrame({
+        'transaction_id': transaction_ids,
+        'customer_id': customer_ids,
+        'card_number': card_numbers,
+        'timestamp': [ts.strftime('%Y-%m-%dT%H:%M:%SZ') for ts in timestamps],
+        'amount': np.round(amounts, 2),
+        'merchant_id': merchant_ids,
+        'merchant_category': merchant_category,
+        'merchant_lat': merchant_lats,
+        'merchant_long': merchant_longs,
+        'is_fraud': is_fraud,
+        'fraud_type': fraud_types,
+        'hour': hours,
+        'day_of_week': days_of_week,
+        'month': months,
+        'distance_from_home': distances_from_home
+    })
+    
+    return df
 
 if __name__ == "__main__":
     generate_synthetic_data(100)
